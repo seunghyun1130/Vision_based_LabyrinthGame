@@ -13,7 +13,7 @@ Movement
 
 CRC는 추후 업데이트 예정
 
-### Jetson COnfig
+### Jetson Config
 
 - I2C 접근 허가
 
@@ -29,3 +29,8 @@ sudo usermod -a -G gpio <username>
 dmesg | grep tty
 sudo chmod a+rw /dev/ttyACM0
 ```
+  
+    
+### Contributors
+Seoyeon Choi, Minjun Chang, Namhoon Kim, Seunghyun Roh, Jiyoung Chae
+![image](https://user-images.githubusercontent.com/97090402/222885665-9824e687-1dd2-46f7-aefa-0ac921711ab8.png)
