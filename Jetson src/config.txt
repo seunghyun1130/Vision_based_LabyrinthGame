@@ -1,8 +1,0 @@
-# I2C 접근 허가
-sudo usermod -aG i2c <username>
-groupadd -f -r gpio
-sudo usermod -a -G gpio <username>
-
-# 아두이노 포트 접근 허가
-dmesg | grep tty
-sudo chmod a+rw /dev/ttyACM0
