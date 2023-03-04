@@ -31,6 +31,6 @@ sudo chmod a+rw /dev/ttyACM0
 ```
   
     
-### Contributors
+# Contributors
 Seoyeon Choi, Minjun Chang, Namhoon Kim, Seunghyun Roh, Jiyoung Chae
 ![image](https://user-images.githubusercontent.com/97090402/222885665-9824e687-1dd2-46f7-aefa-0ac921711ab8.png)
