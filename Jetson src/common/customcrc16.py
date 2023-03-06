@@ -1,7 +1,5 @@
 import crc16
-
-POLYNOMIAL = 0x1021
-PRESET = 0xFFFF
+from config import POLYNOMIAL, PRESET
 
 crc16tab = [ 
  0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
@@ -93,37 +91,32 @@ class CRC16_CCITTFALSE:
         calc_crc = self.crc16(crc_sample)
         calc_crc_h = (calc_crc>>8) & 0xff
         calc_crc_l = calc_crc & 0xff
-
-        # print("original")
-        # print("crcH : ", hex(content[-3]), "crcL :", hex(content[-2]))
-        # print("calculated")
-        # print("crcH : ", hex(calc_crc_h), "crcL :", hex(calc_crc_l))
         if calc_crc_h == content[-3] and calc_crc_l == content[-2]:
             return True
         else:
             return False
     #-----------------------------------------------------------------
-    def makeCRCXMODEM(self, content):
-        l = len(content)
-        crc_sample = content[1:l-3]
-        xmodem = crc16.crc16xmodem(crc_sample)
-        calc_crc_h = (xmodem>>8) & 0xff
-        calc_crc_l = xmodem & 0xff
-        return calc_crc_h, calc_crc_l
+    # def makeCRCXMODEM(self, content):
+    #     l = len(content)
+    #     crc_sample = content[1:l-3]
+    #     xmodem = crc16.crc16xmodem(crc_sample)
+    #     calc_crc_h = (xmodem>>8) & 0xff
+    #     calc_crc_l = xmodem & 0xff
+    #     return calc_crc_h, calc_crc_l
     
 
-    def crcVerifyXMODEM(self, content):
-        l = len(content)
-        crc_sample = content[1:l-3]
+    # def crcVerifyXMODEM(self, content):
+    #     l = len(content)
+    #     crc_sample = content[1:l-3]
 
-        xmodem = crc16.crc16xmodem(crc_sample)
-        calc_crc_h = (xmodem>>8) & 0xff
-        calc_crc_l = xmodem & 0xff
+    #     xmodem = crc16.crc16xmodem(crc_sample)
+    #     calc_crc_h = (xmodem>>8) & 0xff
+    #     calc_crc_l = xmodem & 0xff
         
-        if calc_crc_h == content[-3] and calc_crc_l == content[-2]:
-            return True
-        else:
-            return False
+    #     if calc_crc_h == content[-3] and calc_crc_l == content[-2]:
+    #         return True
+    #     else:
+    #         return False
 
 
 

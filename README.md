@@ -4,14 +4,7 @@
 
 ### Protocol Prototype
 
-Movement
-
-```shell
-[0x02, 0x00, 0x01, 0x00, 0x00, 0xff, 0xff, 0x03]
-[init, seq_h, seq_l, dir, ang, crc_h, crc_l, end]
-```
-
-CRC는 추후 업데이트 예정
+![화면 캡처 2023-03-06 100506](https://user-images.githubusercontent.com/68832065/222997593-82f98321-64cb-4c79-92d4-accc78657ce7.png)
 
 ### Jetson Config
 
@@ -29,8 +22,9 @@ sudo usermod -a -G gpio <username>
 dmesg | grep tty
 sudo chmod a+rw /dev/ttyACM0
 ```
-  
-    
+
+---
 # Contributors
-Seoyeon Choi, Minjun Chang, Namhoon Kim, Seunghyun Roh, Jiyoung Chae
+
+[Seoyeon Choi](https://github.com/n00Nspr1ng), [Minjun Chang](https://github.com/wkdalswns0427), Namhoon Kim, Seunghyun Roh, Jiyoung Chae
 ![image](https://user-images.githubusercontent.com/97090402/222885665-9824e687-1dd2-46f7-aefa-0ac921711ab8.png)
