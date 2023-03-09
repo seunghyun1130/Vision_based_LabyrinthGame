@@ -26,5 +26,5 @@ sudo chmod a+rw /dev/ttyACM0
 ---
 # Contributors
 
-[Seoyeon Choi](https://github.com/n00Nspr1ng), [Minjun Chang](https://github.com/wkdalswns0427), Namhoon Kim, Seunghyun Roh, Jiyoung Chae
+[Seoyeon Choi](https://github.com/n00Nspr1ng), [Minjun Chang](https://github.com/wkdalswns0427), [Namhoon Kim](https://github.com/etoilekim), Seunghyun Roh, Jiyoung Chae
 ![image](https://user-images.githubusercontent.com/97090402/222885665-9824e687-1dd2-46f7-aefa-0ac921711ab8.png)

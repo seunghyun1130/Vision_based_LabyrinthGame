@@ -21,22 +21,22 @@ class masking():
         upper_Red = np.array([0, 0, 255])
         # lower_Red_hsv = np.array([161, 155, 84])
         # upper_Red_hsv = np.array([179, 255, 255])
-        #lower_Red_hsv1 = np.array([0, 100, 20])
-        #upper_Red_hsv1 = np.array([15, 255, 255])
-        #lower_Red_hsv2 = np.array([160, 100, 20])
-        #upper_Red_hsv2 = np.array([179, 255, 255])
-        lower_Red_hsv = np.array([160, 0, 75])
-        upper_Red_hsv = np.array([179, 255, 255])
+        lower_Red_hsv1 = np.array([0, 100, 20])
+        upper_Red_hsv1 = np.array([15, 255, 255])
+        lower_Red_hsv2 = np.array([160, 100, 20])
+        upper_Red_hsv2 = np.array([179, 255, 255])
+        # lower_Red_hsv = np.array([160, 0, 75])
+        # upper_Red_hsv = np.array([179, 255, 255])
          
         if color_mode is 0:
             mask_Red = cv2.inRange(frame, lower_Red, upper_Red)
         else:            
             blurred = cv2.GaussianBlur(frame, (11, 11), 0)
             hsv_frame = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-            #mask_Red1 = cv2.inRange(hsv_frame, lower_Red_hsv1, upper_Red_hsv1)
-            #mask_Red2 = cv2.inRange(hsv_frame, lower_Red_hsv2, upper_Red_hsv2)
-            #mask_Red = mask_Red1 + mask_Red2
-            mask_Red = cv2.inRange(hsv_frame, lower_Red_hsv, upper_Red_hsv)
+            mask_Red1 = cv2.inRange(hsv_frame, lower_Red_hsv1, upper_Red_hsv1)
+            mask_Red2 = cv2.inRange(hsv_frame, lower_Red_hsv2, upper_Red_hsv2)
+            mask_Red = mask_Red1 + mask_Red2
+            # mask_Red = cv2.inRange(hsv_frame, lower_Red_hsv, upper_Red_hsv)
             mask_Red = cv2.erode(mask_Red, None, iterations=7)
             mask_Red = cv2.dilate(mask_Red, None, iterations=7)
 
@@ -103,11 +103,10 @@ class masking():
         return processed_Black
 
 
-webcam = cv2.VideoCapture(0)
+webcam = cv2.VideoCapture(1)
 
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video",
-	help="path to the (optional) video file")
+ap.add_argument("-v", "--video", help="path to the (optional) video file")
 ap.add_argument("-b", "--buffer", type=int, default=64,	help="max buffer size")
 args = vars(ap.parse_args())
 pts = deque(maxlen=args["buffer"])
@@ -162,9 +161,13 @@ while webcam.isOpened():
         #cv2.imshow("grayscale", gray)
         cv2.imshow('frame', frame)
         cv2.imshow("Red", red)
+        # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+        # hsv_frame = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+        # print(hsv_frame)
         #cv2.imshow("Green", green)
         #cv2.imshow("White", white)
         #cv2.imshow("Black", black)
+        # break
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
