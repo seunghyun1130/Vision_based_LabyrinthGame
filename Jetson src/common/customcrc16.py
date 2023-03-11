@@ -1,5 +1,5 @@
 import crc16
-from config import POLYNOMIAL, PRESET
+from config import crcdc
 
 crc16tab = [ 
  0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
@@ -37,16 +37,20 @@ crc16tab = [
  ]
 
 class CRC16_CCITTFALSE:
+    def __init__(self):
+        self.crcdc = crcdc()
+
     def _initial(self, c):
         crc = 0
         c = c << 8
         for j in range(8):
             if (crc ^ c) & 0x8000:
-                crc = (crc << 1) ^ POLYNOMIAL
+                crc = (crc << 1) ^ self.crcdc.POLYNOMIAL
             else:
                 crc = crc << 1
             c = c << 1
         return crc
+
 
     def _update_crc_CCITTFALSE(self,crc, c):
         cc = c & 0xff
@@ -57,66 +61,48 @@ class CRC16_CCITTFALSE:
 
 
     def crc16bytes_CCITTFALSE(self,data_bytes):
-        crc = PRESET
+        crc = self.crcdc.PRESET
         for byte in data_bytes:
-            crc = self._update_crc(crc, (byte))
+            crc = self._update_crc_CCITTFALSE(crc, (byte))
         return hex(crc)
 
 
     def crc16str_CCITTFALSE(self,str):
-        crc = PRESET
+        crc = self.crcdc.PRESET
         for c in str:
-            crc = self._update_crc(crc, ord(c))
+            crc = self._update_crc_CCITTFALSE(crc, ord(c))
         return hex(crc)
 
 
     def crc16_CCITTFALSE(self, data):
         crc = PRESET
         for item in data:
-            crc = self._update_crc(crc, (item))
+            crc = self._update_crc_CCITTFALSE(crc, (item))
         return crc
 
     def makeCRC(self, content):
         l = len(content)
         crc_sample = content[1:l-3]
-        calc_crc = self.crc16(crc_sample)
+        calc_crc = self.crc16_CCITTFALSE(crc_sample)
         calc_crc_h = (calc_crc>>8) & 0xff
         calc_crc_l = calc_crc & 0xff
+        print("crcH : ", hex(calc_crc_h), "crcL :", hex(calc_crc_l))
         return calc_crc_h, calc_crc_l
 
 
     def crcVerify(self, content):
         l = len(content)
         crc_sample = content[1:l-3]
-        calc_crc = self.crc16(crc_sample)
+        calc_crc = self.crc16_CCITTFALSE(crc_sample)
         calc_crc_h = (calc_crc>>8) & 0xff
         calc_crc_l = calc_crc & 0xff
+
         if calc_crc_h == content[-3] and calc_crc_l == content[-2]:
             return True
         else:
             return False
-    #-----------------------------------------------------------------
-    # def makeCRCXMODEM(self, content):
-    #     l = len(content)
-    #     crc_sample = content[1:l-3]
-    #     xmodem = crc16.crc16xmodem(crc_sample)
-    #     calc_crc_h = (xmodem>>8) & 0xff
-    #     calc_crc_l = xmodem & 0xff
-    #     return calc_crc_h, calc_crc_l
-    
 
-    # def crcVerifyXMODEM(self, content):
-    #     l = len(content)
-    #     crc_sample = content[1:l-3]
 
-    #     xmodem = crc16.crc16xmodem(crc_sample)
-    #     calc_crc_h = (xmodem>>8) & 0xff
-    #     calc_crc_l = xmodem & 0xff
-        
-    #     if calc_crc_h == content[-3] and calc_crc_l == content[-2]:
-    #         return True
-    #     else:
-    #         return False
 
 
 

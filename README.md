@@ -4,7 +4,7 @@
 
 ### Protocol Prototype
 
-![화면 캡처 2023-03-06 100506](https://user-images.githubusercontent.com/68832065/222997593-82f98321-64cb-4c79-92d4-accc78657ce7.png)
+![crc](https://user-images.githubusercontent.com/68832065/224462272-75dc1f4a-ed3d-4447-bb47-38aac84fa0fb.JPG)
 
 ### Jetson Config
 
@@ -21,6 +21,18 @@ sudo usermod -a -G gpio <username>
 ```python
 dmesg | grep tty
 sudo chmod a+rw /dev/ttyACM0
+```
+
+- Docker 사용하는 경우
+
+이미지 빌드
+```
+docker build -t myimage .
+```
+
+i2c 활성화하면서 컨테이너 실행
+```
+docker run --privileged myimage
 ```
 
 ---
