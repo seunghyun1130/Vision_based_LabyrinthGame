@@ -3,7 +3,8 @@ import smbus as sm
 from control.controller import MotorControl
 from common.config import address
 
-def logic(address, controller, bus):
+# async function?
+def logic(address, bus, controller):
     ret = controller.move_servo_msg(address, bus, angle_array)
     
     # send again if fail
@@ -15,9 +16,9 @@ def logic(address, controller, bus):
     
 def main(address, bus):
     logic(address, bus)
-    return
+    return True
 
 if __name__=="__main__":
     bus = sm.SMBus(1)
     mc = MotorControl()
-    main()
+    main(address, bus, mc)

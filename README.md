@@ -23,6 +23,18 @@ dmesg | grep tty
 sudo chmod a+rw /dev/ttyACM0
 ```
 
+- Docker 사용하는 경우
+
+이미지 빌드
+```
+docker build -t myimage .
+```
+
+i2c 활성화하면서 컨테이너 실행
+```
+docker run --privileged myimage
+```
+
 ---
 # Contributors
 
