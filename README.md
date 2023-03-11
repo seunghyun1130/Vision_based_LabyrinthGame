@@ -4,7 +4,7 @@
 
 ### Protocol Prototype
 
-![화면 캡처 2023-03-06 100506](https://user-images.githubusercontent.com/68832065/222997593-82f98321-64cb-4c79-92d4-accc78657ce7.png)
+![crc](https://user-images.githubusercontent.com/68832065/224462272-75dc1f4a-ed3d-4447-bb47-38aac84fa0fb.JPG)
 
 ### Jetson Config
 

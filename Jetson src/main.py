@@ -1,19 +1,23 @@
 #! /usr/bin/python3
 import smbus as sm
 from control.controller import MotorControl
-from common.customcrc16 import CRC16_CCITTFALSE
+from common.config import address
 
-address = 0x50
-bus = sm.SMBus(1)
-mc = MotorControl()
-
-def logic(address, bus):
+def logic(address, controller, bus):
+    ret = controller.move_servo_msg(address, bus, angle_array)
     
-    return 0
+    # send again if fail
+    if not ret:
+        ret = controller.move_servo_msg(address, bus, angle_array)
+        return True
+    else:
+        return True
     
-def main():
+def main(address, bus):
     logic(address, bus)
     return
 
 if __name__=="__main__":
+    bus = sm.SMBus(1)
+    mc = MotorControl()
     main()
