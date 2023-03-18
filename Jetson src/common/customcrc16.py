@@ -1,5 +1,3 @@
-from common.config import crcdc
-
 POLYNOMIAL : int = 0x1021
 PRESET : int = 0xFFFF
 
