@@ -1,5 +1,7 @@
-import crc16
-from config import crcdc
+from common.config import crcdc
+
+POLYNOMIAL : int = 0x1021
+PRESET : int = 0xFFFF
 
 crc16tab = [ 
  0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
@@ -102,18 +104,3 @@ class CRC16_CCITTFALSE:
         else:
             return False
 
-
-
-
-
-if __name__=="__main__":
-    data = bytes('\x02\x06\x0f\x11\x00\x07\x20\x23\x02\x24\x18\x22\x32\x0c\xb3\x03',"utf-8")
-    data2 = b'\x02\x06\x0f\x11\x00\x07\x20\x23\x02\x24\x18\x22\x32\x0c\xb3\x03'
-    mycrc = CRC16_CCITTFALSE()
-    
-    print(data)
-    mycrc.makeCRCXMODEM(data)
-    print("-----------------------------")
-    print(data2)
-    print(data2.decode("utf-8"))
-    mycrc.makeCRCXMODEM(data2)

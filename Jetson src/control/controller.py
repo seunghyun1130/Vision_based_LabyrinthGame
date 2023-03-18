@@ -32,7 +32,7 @@ class MotorControl:
         crc_h, crc_l = self.crcagent.makeCRC(dataframe)    
         dataframe[-3] = crc_h; dataframe[-2] = crc_l    
         
-        ret = bus.write_byte(bytes(dataframe))
+        ret = bus.write_byte(address, bytes(dataframe))
         
         if not ret:
             return False 
@@ -50,7 +50,7 @@ class MotorControl:
 
         print(dataframe)
         
-        # ret = bus.write_byte(bytes(dataframe))
+        # ret = bus.write_byte(address, bytes(dataframe))
         
         if not ret:
             return False 

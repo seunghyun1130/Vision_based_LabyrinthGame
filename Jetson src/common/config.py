@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 # controller
 @dataclass
 class motordc:

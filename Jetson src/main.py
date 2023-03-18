@@ -3,6 +3,9 @@ import smbus as sm
 from control.controller import MotorControl
 from common.config import address
 
+address = 0x50
+bus = sm.SMBus(1)
+
 # async function?
 def logic(address, bus, controller):
     ret = controller.move_servo_msg(address, bus, angle_array)
