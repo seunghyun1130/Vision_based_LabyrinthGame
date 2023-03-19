@@ -1,22 +1,13 @@
 #include <Servo.h> //서보관련 라이브러리를 사용하기 위해
+#include <Wire.h>
+#include "config.h"
+#include "crc.h"
 
 Servo servo1;  // 서보 변수 선언
 Servo servo2;  // 서보 변수 선언
-const int servo1Pin = 10; // 서보 핀
-const int servo2Pin = 9; // 서보 핀
-const int ledR = 11;
-const int ledB = 12;
 
-const int buttonPin2 = 2;
-const int buttonPin3 = 3;
-const int buttonPin4 = 4;
-const int buttonPin5 = 5;
-
-int servo1_degree = 90;
-int servo2_degree = 90;
 
 int state = 1;
-
 int a;
 int b;
 
@@ -38,8 +29,6 @@ void setup() {
   pinMode(buttonPin5, INPUT_PULLUP);
   pinMode(ledR,OUTPUT);
   pinMode(ledB,OUTPUT);
-
-
 
 }
 
