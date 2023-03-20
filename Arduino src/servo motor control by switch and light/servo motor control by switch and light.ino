@@ -10,7 +10,6 @@ Servo servo2;  // 서보 변수 선언
 int state = 1;
 int a;
 int b;
-
 int getMotor1();
 int getMotor2();
 
@@ -29,6 +28,9 @@ void setup() {
   pinMode(buttonPin5, INPUT_PULLUP);
   pinMode(ledR,OUTPUT);
   pinMode(ledB,OUTPUT);
+
+  Wire.onReceive(receiveEvent);
+  Wire.onRequest(sendData);
 
 }
 
