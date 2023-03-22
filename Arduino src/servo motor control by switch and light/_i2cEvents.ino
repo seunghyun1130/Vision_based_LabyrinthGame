@@ -6,9 +6,9 @@ u16 CRC;
 u8 CRC_H, CRC_L;
 
 
-char receiveEvent(int bytes) {
+char* receiveEvent(int bytes) {
   char inputData;
-  char outData[2];
+  char* outData[2];
   inputData = Wire.read();
   Serial.print("Receive Data : "); Serial.println(inputData);
   outData[0] = inputData[2]; outData[1] = inputData[3];
@@ -28,9 +28,9 @@ char receiveEvent(int bytes) {
   if((CRC_H == inputData[-3])&&(CRC_L == inputData[-2])){
     return outData;
   }
-
-
-  return false;
+  else{
+    return false;
+  }
 }
 
 void sendData(char ACK){
