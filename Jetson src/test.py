@@ -13,25 +13,23 @@ def writeNumber(value):
 
 def readNumber():
     number = bus.read_byte(address)
-    print(number)
     return number
 
-def testData():
-    dataframe = [0x02, 0x07, 0xff, 0xff, 0xff, 0xff, 0x03]
-    dataframe[2] = 15; dataframe[3] = 30
+def testData(angle1, angle2):
+    dataframe = [0x07, 0xff, 0xff, 0xff, 0xff, 0x03]
+    dataframe[2] = angle1; dataframe[3] = angle2
     crc_h, crc_l = crcagent.makeCRC(dataframe)    
-    dataframe[-3] = crc_h; dataframe[-2] = crc_l    
-    for i in range(len(dataframe)):
-        ret = bus.write_byte(address, dataframe[i])
+    dataframe[-3] = crc_h; dataframe[-2] = crc_l  
+    
+    ret = bus.write_i2c_block_data(address, 0x02,dataframe)
+    
     return dataframe
 
 while True:
-    data = 100
-    print(data)
-
-    writeNumber(data)
     number = readNumber()
-    data = testData()
-    
+    data = testData(15, 30)
     print(data)
-    time.sleep(1)
+    time.sleep(5)
+    data = testData(45, 10)
+    print(data)
+    time.sleep(5)

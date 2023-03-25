@@ -37,15 +37,13 @@ crc16tab = [
  ]
 
 class CRC16_CCITTFALSE:
-    def __init__(self):
-        self.crcdc = crcdc()
 
     def _initial(self, c):
         crc = 0
         c = c << 8
         for j in range(8):
             if (crc ^ c) & 0x8000:
-                crc = (crc << 1) ^ self.crcdc.POLYNOMIAL
+                crc = (crc << 1) ^ POLYNOMIAL
             else:
                 crc = crc << 1
             c = c << 1
@@ -61,14 +59,14 @@ class CRC16_CCITTFALSE:
 
 
     def crc16bytes_CCITTFALSE(self,data_bytes):
-        crc = self.crcdc.PRESET
+        crc = PRESET
         for byte in data_bytes:
             crc = self._update_crc_CCITTFALSE(crc, (byte))
         return hex(crc)
 
 
     def crc16str_CCITTFALSE(self,str):
-        crc = self.crcdc.PRESET
+        crc = PRESET
         for c in str:
             crc = self._update_crc_CCITTFALSE(crc, ord(c))
         return hex(crc)
