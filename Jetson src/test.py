@@ -4,7 +4,7 @@ import time
 from common.customcrc16 import CRC16_CCITTFALSE
 
 address = 0x50
-bus = sm.SMBus(1)
+bus = sm.SMBus(2)
 crcagent = CRC16_CCITTFALSE()
 
 def writeNumber(value):
