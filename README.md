@@ -7,10 +7,17 @@
 ![crc](https://user-images.githubusercontent.com/68832065/224462272-75dc1f4a-ed3d-4447-bb47-38aac84fa0fb.JPG)
 
 ### Jetson Config
+- ubuntu 기초 setting
+
+```shell
+sudo apt update
+sudo apt upgrade
+sudo apt install i2ctools
+```
 
 - I2C 접근 허가
 
-```python
+```shell
 sudo usermod -aG i2c <username>
 groupadd -f -r gpio
 sudo usermod -a -G gpio <username>
@@ -18,7 +25,7 @@ sudo usermod -a -G gpio <username>
 
 - 아두이노 포트 접근 허가
 
-```python
+```shell
 dmesg | grep tty
 sudo chmod a+rw /dev/ttyACM0
 ```
@@ -26,12 +33,12 @@ sudo chmod a+rw /dev/ttyACM0
 - Docker 사용하는 경우
 
 이미지 빌드
-```
+```shell
 docker build -t myimage .
 ```
 
 i2c 활성화하면서 컨테이너 실행
-```
+```shell
 docker run --privileged myimage
 ```
 
