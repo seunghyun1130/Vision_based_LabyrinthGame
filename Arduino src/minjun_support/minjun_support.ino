@@ -1,6 +1,7 @@
 #include <Servo.h> //서보관련 라이브러리를 사용하기 위해
 #include <Wire.h>
 #include "config.h"
+#include "crc.h"
 
 Servo servo1;  // 서보 변수 선언
 Servo servo2;  // 서보 변수 선언
@@ -14,7 +15,8 @@ int b;
 uint8_t rcv = 0;
 uint8_t rcv_stat = 0;
 byte _rcvBuf[7]; // [0x02, 0x07, ang1, ang2, crch, crcl, 0x03]
-
+u16 CRC;
+u8 CRC_H, CRC_L;
 u16 crc16_ccitt(const char *buf, int len); // function prototype
 bool checkCRC(char *buf);
 
