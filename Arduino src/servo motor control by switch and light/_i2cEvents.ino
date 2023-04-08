@@ -1,5 +1,5 @@
 #include "crc.h"
-#include <Wire.h
+#include <Wire.h>
 
 u16 crc16_ccitt(const void *buf, int len);
 u16 CRC;
