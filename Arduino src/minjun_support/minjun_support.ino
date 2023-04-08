@@ -1,6 +1,7 @@
 #include <Servo.h> //서보관련 라이브러리를 사용하기 위해
 #include <Wire.h>
 #include "config.h"
+#include "crc.h"
 
 Servo servo1;  // 서보 변수 선언
 Servo servo2;  // 서보 변수 선언
@@ -13,7 +14,11 @@ int a;
 int b;
 uint8_t rcv = 0;
 uint8_t rcv_stat = 0;
-byte _rcvBuf[7];
+byte _rcvBuf[7]; // [0x02, 0x07, ang1, ang2, crch, crcl, 0x03]
+u16 CRC;
+u8 CRC_H, CRC_L;
+u16 crc16_ccitt(const char *buf, int len); // function prototype
+bool checkCRC(char *buf);
 
 void receiveEvent(int bytes) {
   int index = 0;
@@ -57,9 +62,6 @@ void setup() {
 }
 
 void loop() {
-
-  
-
   while(state==1)
   {
     servo1.write(servo1_degree);
@@ -76,11 +78,14 @@ void loop() {
   }
 
   while(state==0)
-  {
+  { 
+    if(!checkCRC(_rcvBuf)){
+      Serial.println("invalid crc");
+      break;
+    }
     a = int(_rcvBuf[1]);
     b = int(_rcvBuf[2]);
-    Serial.print(a);
-    Serial.println(b);
+    Serial.print(a); Serial.println(b);
     a=servo1_degree;
     b=servo2_degree;
 
@@ -137,9 +142,29 @@ void loop() {
       break;
     }
     if (buttonValue5 == LOW) {
-
     }
-
     delay(10);
+  }
+}
+
+u16 crc16_ccitt(const char *buf, int len)
+{
+    register int counter;
+    register u16 crc = 0;
+    for( counter = 0; counter < len; counter++)
+    crc = (crc<<8) ^ crc16tab[((crc>>8) ^ *(char *)buf++)&0x00FF];
+    return crc;
+}
+
+bool checkCRC(char* buf){
+  // get _rcvBuf as input
+  char CRCSET[4] = {int(buf[0]), int(buf[1]), int(buf[2]), int(buf[3])};
+  CRC = crc16_ccitt(CRCSET, sizeof(CRCSET));
+  CRC_H = (CRC>>8);CRC_L = (CRC & 0xFF);
+
+  if((CRC_H == buf[4])&&(CRC_L == buf[5])){
+    return true;
+  }else{
+    return false;
   }
 }

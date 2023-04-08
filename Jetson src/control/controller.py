@@ -32,7 +32,7 @@ class MotorControl:
         angle = self.makeAngleInRange(angle_array)
         
         dataframe[2] = angle[0]; dataframe[3] = angle[1]
-        crc_h, crc_l = self.crcagent.makeCRC(dataframe)    
+        crc_h, crc_l = self.crcagent.makeCRC(dataframe[:2])    
         dataframe[-3] = crc_h; dataframe[-2] = crc_l    
         
         ret = self.bus.write_i2c_block_data(address, 0x02, dataframe)
