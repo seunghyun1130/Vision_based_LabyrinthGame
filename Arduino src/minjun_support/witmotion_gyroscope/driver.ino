@@ -16,45 +16,39 @@ unsigned long long int uS_TO_S_FACTOR = 1000000ULL;
 unsigned long long int TIME_TO_SLEEP = 0;
 RTC_DATA_ATTR int bootCount = 0;
 
+byte changeADDR1[] = {0x50, 0x06, 0x00, 0x1A, 0x00, 0x51, 0x64, 0x70}; // to change 485 address to 0x51 from 0x50
+byte saveConfig2[]={0x51, 0x06, 0x00, 0x00, 0x00, 0x00, 0x85, 0x9A}; // save changed addr config
+
 byte unlockMaster1[]={0x50, 0x06, 0x00, 0x69, 0xB5, 0x88, 0x22, 0xA1};
-byte changeADDR1[] = {0x50, 0x06, 0x00, 0x1A, 0x00, 0x51, 0x64, 0x70};
+byte saveConfig1[]={0x50, 0x06, 0x00, 0x00, 0x00, 0x00, 0x84, 0x4B};
+
 byte accCalmode1[]={0x50, 0x06, 0x00, 0x01, 0x00, 0x01, 0x14, 0x4B};
 byte magCalmode1[]={0x50, 0x06, 0x00, 0x01, 0x00, 0x07, 0x94, 0x49};
 byte setNormal1[]={0x50, 0x06, 0x00, 0x01, 0x00, 0x00, 0xD5, 0x8B};
-byte saveConfig1[]={0x50, 0x06, 0x00, 0x00, 0x00, 0x00, 0x84, 0x4B};
 byte readAngle1[] = {0x50, 0x03, 0x00, 0x3d, 0x00, 0x03, 0x99, 0x86};
 byte readAcc1[] = {0x50, 0x03, 0x00, 0x34, 0x00, 0x03, 0x49, 0x84};
 byte readAngVel1[] = {0x50, 0x03, 0x00, 0x37, 0x00, 0x03, 0xB9, 0x84};
-
-byte unlockMaster2[] = {0x51, 0x06, 0x00, 0x69, 0xB5, 0x88, 0x23, 0x70};
-byte saveConfig2[]={0x51, 0x06, 0x00, 0x00, 0x00, 0x00, 0x85, 0x9A};
-byte accCalmode2[]={0x51, 0x06, 0x00, 0x01, 0x00, 0x01, 0x15, 0x9A};
-byte magCalmode2[]={0x51, 0x06, 0x00, 0x01, 0x00, 0x07, 0x95, 0x98};
-byte setNormal2[]={0x51, 0x06, 0x00, 0x01, 0x00, 0x00, 0xD4, 0x5A};
-byte readAngle2[] = {0x51, 0x03, 0x00, 0x3D, 0x00, 0x03, 0x98, 0x57};
-byte readAcc2[] = {0x51, 0x03, 0x00, 0x34, 0x00, 0x03, 0x48, 0x55};
-byte readAngVel2[] = {0x51, 0x03, 0x00, 0x37, 0x00, 0x03, 0xB8, 0x55};
 
 short recData1[12];
 short recData2[12];
 short trashBuffer[180];
 
-short initBuffer[3][6];
-short prevBuffer[3][6];
-short newBuffer[3][6];
-float diffBuffer[3][6];
+short initBuffer[3][3];
+short prevBuffer[3][3];
+short newBuffer[3][3];
+float diffBuffer[3][3];
 
 /*
  * buffer structure
  **********************************************************************
- *           dev1[x] | dev1[y] | dev1[z] | dev2[x] | dev2[y] | dev2[z] |
- *           -----------------------------------------------------------
- *accel      |       |         |         |         |         |         |
- *           -----------------------------------------------------------
- *angle      |       |         |         |         |         |         |
- *           -----------------------------------------------------------
- *angularvel |       |         |         |         |         |         |
- *           -----------------------------------------------------------
+ *           dev1[x] | dev1[y] | dev1[z] |
+ *           -----------------------------
+ *accel      |       |         |         |
+ *           -----------------------------
+ *angle      |       |         |         |
+ *           -----------------------------
+ *angularvel |       |         |         |
+ *           -----------------------------
  ***********************************************************************
  */
 
@@ -178,8 +172,7 @@ void sendCommand(byte command[8], int prt){
   rs485.flush();
   }
 
-void calibrateAcc(int type){
-    if(type==1){
+void calibrateAcc(){
       Serial.println("---------- Acceleration Calibration Init ----------");
       sendCommand(unlockMaster1,1);
       delay(500);
@@ -189,22 +182,9 @@ void calibrateAcc(int type){
       delay(1000);
       sendCommand(saveConfig1,1);
       delay(1000);
-    }
-    else if(type==2){
-      Serial.println("---------- Acceleration Calibration Init ----------");
-      sendCommand(unlockMaster2,1);
-      delay(500);
-      sendCommand(accCalmode2,1);
-      delay(6000);
-      sendCommand(setNormal2,1);
-      delay(1000);
-      sendCommand(saveConfig2,1);
-      delay(1000);
-    }
   }
   
-void calibrateMag(int type){
-    if(type==1){
+void calibrateMag(){
       Serial.println("---------- Magnetic Calibration Init ----------");
       sendCommand(unlockMaster1,1);
       delay(500);
@@ -216,20 +196,6 @@ void calibrateMag(int type){
       delay(1000);
       sendCommand(saveConfig1,1);
       delay(1000);  
-    }
-    else if(type==2){
-      Serial.println("---------- Magnetic Calibration Init ----------");
-      sendCommand(unlockMaster2,1);
-      delay(500);
-      sendCommand(magCalmode2,1);
-      Serial.println("---------- Slowly rotate in 3 axis ----------");
-      delay(5000);
-      Serial.println("---------- May stop now :) ----------");
-      sendCommand(setNormal2,1);
-      delay(1000);
-      sendCommand(saveConfig2,1);
-      delay(1000);  
-      }
   }
   
 
@@ -248,11 +214,8 @@ int rs485_receive(short recv[], int num){
     }
   }
   
-void readAcceleration(int type){
-  if(type==1){
+void readAcceleration(){
     sendCommand(readAcc1,0);
-    //Serial.println("Acceleration");
-    
     if(rs485_receive(recData1, 11) != -1){
       /*
       for(int i = 0;i<11;i++){
@@ -266,41 +229,12 @@ void readAcceleration(int type){
       Serial.println("no resp");
       Serial.println();    
       } 
-    //printAccel(recData1);
     rs485.flush();
-    //Serial.println(); 
     delay(5);
-    }
-
-  else if(type==2){
-    sendCommand(readAcc2,0);
-    //Serial.println("Acceleration");
-    
-    if(rs485_receive(recData2, 11) != -1){
-      /*
-      for(int i = 0;i<11;i++){
-        Serial.print(recData2[i],HEX);
-        Serial.print(",");
-        }
-        */
-        
-      }
-     else{
-      Serial.println("no resp");
-      Serial.println();    
-      } 
-    //printAccel(recData2);
-    rs485.flush();
-    //Serial.println(); 
-    delay(5);
-    }
   }
 
-void readSensorAngle(int type){
-  if(type==1){
+void readSensorAngle(){
     sendCommand(readAngle1,0);
-    //Serial.println("Angle");
-    
     if(rs485_receive(recData1, 11) != -1){
       /*
       for(int i = 0;i<11;i++){
@@ -308,47 +242,17 @@ void readSensorAngle(int type){
         Serial.print(",");
         }
         */
-        
       }
      else{
       Serial.println("no resp");
       Serial.println();    
       } 
-    //printAngle(recData1);
     rs485.flush();
-    //Serial.println(); 
     delay(5);
-    }
-    
-  else if(type==2){
-    sendCommand(readAngle2,0);
-    //Serial.println("Angle");
-    
-    if(rs485_receive(recData2, 11) != -1){
-      /*
-      for(int i = 0;i<11;i++){
-        Serial.print(recData2[i],HEX);
-        Serial.print(",");
-        }
-        */
-        
-      }
-     else{
-      Serial.println("no resp");
-      Serial.println();    
-      } 
-    //printAngle(recData2);
-    rs485.flush();
-    //Serial.println(); 
-    delay(5);
-    }
   }
 
-void readAngularVelocity(int type){
-  if(type==1){
+void readAngularVelocity(){
     sendCommand(readAngVel1,0);
-    //Serial.println("Angular Velocity");
-    
     if(rs485_receive(recData1, 11) != -1){
       
       for(int i = 0;i<11;i++){
@@ -363,50 +267,15 @@ void readAngularVelocity(int type){
       Serial.println("no resp");
       Serial.println();    
       } 
-    //printAngVel(recData1);
     rs485.flush();
-    //Serial.println(); 
     delay(5);
-    }
-
-  else if(type==2){
-    sendCommand(readAngVel2,0);
-    //Serial.println("Angular Velocity");
-    
-    if(rs485_receive(recData2, 11) != -1){
-      
-      for(int i = 0;i<11;i++){
-        /*
-        Serial.print(recData2[i],HEX);
-        Serial.print(",");
-        }
-        */
-       
-      }
-    }
-     else{
-      Serial.println("no resp");
-      Serial.println();    
-      } 
-    //printAngVel(recData2);
-    rs485.flush();
-    //Serial.println(); 
-    delay(5);
-    }
   }
 
 // device 1,2 // type 0,1,2
-void savebuffer(short tarbuf[3][6], int device, int type){
-  if(device==1){
+void savebuffer(short tarbuf[3][3], int type){
     tarbuf[type][0]=(((short)recData1[3]<<8)|recData1[4]);
     tarbuf[type][1]=(((short)recData1[5]<<8)|recData1[6]);
     tarbuf[type][2]=(((short)recData1[7]<<8)|recData1[8]);
-    }
-  else if(device==2){
-    tarbuf[type][3]=(((short)recData2[3]<<8)|recData2[4]);
-    tarbuf[type][4]=(((short)recData2[5]<<8)|recData2[6]);
-    tarbuf[type][5]=(((short)recData2[7]<<8)|recData2[8]);
-    }
   }
 
 void printAccel(short rec[]){
@@ -430,9 +299,9 @@ void printAngVel(short rec[]){
   Serial.print(data_x);Serial.print("   "); Serial.print(data_y);Serial.print("   "); Serial.println(data_z);
   }
   
-// device 1,2 // type 0,1,2
-void calculateVal(float arr[], int device, int type){
-  for(int i=3*(device-1); i<3*(device-1)+3; i++){
+// type 0,1,2
+void calculateVal(float arr[], int type){
+  for(int i=0; i<3; i++){
     if(type==0){
         arr[i] = (newBuffer[type][i] - initBuffer[type][i])/(32768/(16*9.81));
       }
@@ -445,62 +314,41 @@ void calculateVal(float arr[], int device, int type){
     diffBuffer[type][i]=arr[i];
     }
 
-  if(device==1){
     Serial.print(arr[0]);Serial.print("   "); Serial.print(arr[1]);Serial.print("   "); Serial.println(arr[2]);
-    }
-  else{
-    Serial.print(arr[3]);Serial.print("   "); Serial.print(arr[4]);Serial.print("   "); Serial.println(arr[5]);
-    }
-    
-  
   }
 
-float calcAbsVal(int type, int device){
+float calcAbsVal(int type){
   float val;
-  if(device == 1){
-    val = sqrt(pow(diffBuffer[type][0],2.0) + pow(diffBuffer[type][1],2.0) + pow(diffBuffer[type][2],2.0));  
-    }
-  else if(device == 2){
-    val = sqrt(pow(diffBuffer[type][3],2.0) + pow(diffBuffer[type][4],2.0) + pow(diffBuffer[type][5],2.0));    
-    }
+  val = sqrt(pow(diffBuffer[type][0],2.0) + pow(diffBuffer[type][1],2.0) + pow(diffBuffer[type][2],2.0));  
   Serial.println(val);        
   return val;
   }
 
-void readSensor(short buf[3][6]){
-  readAcceleration(1);
-  savebuffer(buf, 1, 0);
-//  readAcceleration(2);
-//  savebuffer(buf, 2, 0);
-  
-  readSensorAngle(1);
-  savebuffer(buf, 1, 1);
-//  readSensorAngle(2);
-//  savebuffer(buf, 2, 1);
-    
-  readAngularVelocity(1);
-  savebuffer(buf, 1, 2);
-//  readAngularVelocity(2);
-//  savebuffer(buf, 2, 2);
+void readSensor(short buf[3][3]){
+  readAcceleration();
+  savebuffer(buf, 0);
+  readSensorAngle();
+  savebuffer(buf, 1);
+  readAngularVelocity();
+  savebuffer(buf, 2);
 }
 
 void calcSensor(){
   calculateVal(accDiff, 1, 0);
-//  calculateVal(accDiff, 2, 0);
   calculateVal(angDiff, 1, 1);
-//  calculateVal(angDiff, 2, 1);
   calculateVal(angvelDiff, 1, 2);
-//  calculateVal(angvelDiff, 2, 2);
 }
 
 void clearBuffer(){
   for(int i=0; i<3;i++){
-    for(int j=0; j<6;j++){
+    for(int j=0; j<3;j++){
       prevBuffer[i][j] = newBuffer[i][j];
       newBuffer[i][j] = 0;
       }
   }
 }
+
+/*
 void sensorPOST(int sen){
   if(sen==1){
     sensor["type"]="SENSOR1";
@@ -546,6 +394,7 @@ void sensorPOST(int sen){
     }
   }
 
+// if we're gonna use REST API 
 void postHTTP(int sen){
   HTTPClient http;
   sensorPOST(sen);
@@ -572,6 +421,7 @@ void postHTTP(int sen){
   http.end();
 
 }
+*/
 
 
 void setup() 
@@ -598,13 +448,7 @@ void setup()
 
   Serial.println("--------------- Serial Initiated ---------------");
   calibrateAcc(1);
-//  Serial.println();
-//  calibrateAcc(2);
-  Serial.println();
   calibrateMag(1);
-  Serial.println();
-//  calibrateMag(2);
-  
   Serial.println("--------------- Calibration Done ---------------");
   rs485.flush();
   
@@ -636,10 +480,6 @@ void loop()
   }
   readSensor(newBuffer);
   calcSensor();
-  Serial.println("new line");
-  postHTTP(1);
-//  postHTTP(2);
-  //calcAbsVal(2,1);
-  //calcAbsVal(2,2);
+//   postHTTP(1);
   clearBuffer();
 }
