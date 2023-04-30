@@ -36,7 +36,6 @@ void setup() {
 
 void loop() {
 
-
   a = getMotor1();
   b = getMotor2();
   Serial.print(a);
