@@ -1,3 +1,20 @@
+const int servo1Pin = 10; // 서보 핀
+const int servo2Pin = 9; // 서보 핀
+const int ledR = 11;
+const int ledB = 12;
+
+const int buttonPin2 = 2;
+const int buttonPin3 = 3;
+const int buttonPin4 = 4;
+const int buttonPin5 = 5;
+
+const int Address = 0x50;
+
+const char* ssid = "U+Net850C";
+const char* password = "C87568BJ$F";
+const char* mqtt_server = "pc IP";
+
+
 #define SENSOR_ACC1_X 600
 #define SENSOR_ACC1_Y 601
 #define SENSOR_ACC1_Z 602
@@ -17,3 +34,6 @@
 #define ETH_CLK_MODE    ETH_CLOCK_GPIO0_IN
 #define ETH_TYPE        ETH_PHY_LAN8720
 static bool eth_connected = false;
+
+#define RXD2 5
+#define TXD2 17
