@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include "config.h"
 
 int rcv = 0;
 const int Address = 0x50;
@@ -11,13 +12,18 @@ void receiveEvent(int bytes) {
   while(Wire.available()){
     rcv = Wire.read();
     _rcvBuf[++index] = rcv;
-    Serial.print("Receive Data : ");
-    Serial.println(rcv); 
+    rcv_stat += 1;
+    // Serial.print("Receive Data : ");
+    // Serial.println(rcv); 
   }
 
-  for(int i = 0; i<8; i++){
+  for(int i = 0; i<7; i++){
    Serial.println(_rcvBuf[i]); 
   }
+
+  // return ACK
+  Wire.write(rcv_stat);
+  rcv_stat = 0;
 }
 
 void sendData(){
@@ -30,9 +36,4 @@ void setup()
   Wire.begin(Address);
   Wire.onReceive(receiveEvent);
 //  Wire.onRequest(sendData);
-}
-
-void loop()
-{
-//    Serial.println("running...");
 }

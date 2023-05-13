@@ -1,27 +1,37 @@
 #include <Servo.h> //서보관련 라이브러리를 사용하기 위해
-#include <Wire.h>
-#include "config.h"
 #include "crc.h"
+#include "config.h"
+#include "i2c_cb.h"
+#include "network_fn.h"
+#include "wt32driver.h"
 
 Servo servo1;  // 서보 변수 선언
 Servo servo2;  // 서보 변수 선언
 
+int servo1_degree = 90;
+int servo2_degree = 90;
 
 int state = 1;
 int a;
 int b;
-int getMotor1();
-int getMotor2();
-
+uint8_t rcv = 0;
+uint8_t rcv_stat = 0;
+byte _rcvBuf[7]; // [0x02, 0x07, ang1, ang2, crch, crcl, 0x03]
+u16 CRC;
+u8 CRC_H, CRC_L;
 
 void setup() {
 
   servo1.attach(servo1Pin); 
   servo2.attach(servo2Pin);
 
-  Serial.begin(9600);
-  getMotor1();
-  getMotor2();
+  Serial.begin(115200);
+
+  // Wire.begin(Address); // change this part to socket
+  // Wire.onReceive(receiveEvent);
+  setupMQTTCLient();
+  // setupWT32(); // imu sensor init
+
   pinMode(buttonPin2, INPUT_PULLUP);
   pinMode(buttonPin3, INPUT_PULLUP);
   pinMode(buttonPin4, INPUT_PULLUP);
@@ -29,19 +39,17 @@ void setup() {
   pinMode(ledR,OUTPUT);
   pinMode(ledB,OUTPUT);
 
-  Wire.onReceive(receiveEvent);
-  Wire.onRequest(sendData);
-
 }
 
 void loop() {
 
+  // mqtt client conn
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
 
-  a = getMotor1();
-  b = getMotor2();
-  Serial.print(a);
-  Serial.println(b);
-
+  // motor control
   while(state==1)
   {
     servo1.write(servo1_degree);
@@ -58,7 +66,17 @@ void loop() {
   }
 
   while(state==0)
-  {
+  { 
+    if(!checkCRC(_rcvBuf)){
+      Serial.println("invalid crc");
+      break;
+    }
+    a = int(_rcvBuf[1]);
+    b = int(_rcvBuf[2]);
+    Serial.print(a); Serial.println(b);
+    a=servo1_degree;
+    b=servo2_degree;
+
     int X = analogRead(0);
     int Y = analogRead(1);
 
@@ -112,21 +130,8 @@ void loop() {
       break;
     }
     if (buttonValue5 == LOW) {
-
     }
-
     delay(10);
-
-
-
-
   }
+}
 
-
-
-
-
-
-
-
-  }
