@@ -1,22 +1,33 @@
 import cv2  
+#from google.colab.patches import cv2_imshow -> 코랩에서 imshow를 쓰려면 이걸 import해야함
 import numpy as np
 #import matplotlib.pyplot as plt
 
+
+path = 'C:/Users/Etoile/Desktop/labyrinth/Array-Maze_test/'
+object = 'maze_withball.png'
+img_file = path+object
+threshold_plane = 192
+threshold_ball = 100
+
+#0이 어둡고 255가 밝은거
+label_plane = 255 #바닥의 label값을 지정
+label_ball = 128
+label_wall = 0 
+
+
+#class
 class img2array:
     def __init__(self, img, threshold_plane=192, threshold_ball=100):
         #img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
         self.img = cv2.resize(img, (120,120), interpolation=cv2.INTER_LANCZOS4)
-        
-        # Thresholds
         self.threshold_plane = threshold_plane
         self.threshold_ball = threshold_ball
-        self.label_plane = 255 # label of floor
+        self.label_plane = 255
         self.label_ball = 128
         self.label_wall = 0 
-
     def to_array(self):
         return self.img
-    
     def to_label(self):
         IMG = self.img
         for j in range(IMG[0, :].size):
@@ -28,7 +39,6 @@ class img2array:
                 elif IMG[i,j] < self.threshold_ball:
                     IMG[i,j] = self.label_wall
         return IMG
-
 
 if __name__=="__main__":
     cam = cv2.VideoCapture(1)
