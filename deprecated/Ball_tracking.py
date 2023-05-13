@@ -118,6 +118,7 @@ if __name__=="__main__":
         
         if status:
             frame = imutils.resize(frame, height=480, width=640)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             
             red, mask = masking().toRed(frame)
             green = masking().toGreen(frame)
