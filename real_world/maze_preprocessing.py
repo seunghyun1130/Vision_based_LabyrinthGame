@@ -2,23 +2,29 @@ import cv2
 import numpy as np
 #import matplotlib.pyplot as plt
 
-class img2array:
-    def __init__(self, img, threshold_plane=192, threshold_ball=100):
-        #img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
-        self.img = cv2.resize(img, (120,120), interpolation=cv2.INTER_LANCZOS4)
-        
+from Ball_tracking import masking
+
+class ImagePreprocess:
+    '''
+    Class for preprocessing images
+    Args:
+        img_size : 
+        threshold_plane
+        threshold_ball
+    '''
+    def __init__(self, img_size=(480,640), threshold_plane=192, threshold_ball=100):
+        self.img_size = img_size
+        self.masker = masking()
+
         # Thresholds
         self.threshold_plane = threshold_plane
         self.threshold_ball = threshold_ball
         self.label_plane = 255 # label of floor
         self.label_ball = 128
         self.label_wall = 0 
-
-    def to_array(self):
-        return self.img
     
-    def to_label(self):
-        IMG = self.img
+    def to_label(self, img):
+        IMG = cv2.resize(img, (120,120), interpolation=cv2.INTER_LANCZOS4)
         for j in range(IMG[0, :].size):
             for i in range(IMG[:, 0].size):
                 if IMG[i,j] >= self.threshold_plane:
@@ -28,6 +34,10 @@ class img2array:
                 elif IMG[i,j] < self.threshold_ball:
                     IMG[i,j] = self.label_wall
         return IMG
+    
+    
+#    def get_ball(self, img):
+        
 
 
 if __name__=="__main__":
@@ -36,16 +46,18 @@ if __name__=="__main__":
     assert cam.isOpened(), "Webcam is not connected"
 
     while cam.isOpened():
-        _, frame = cam.read()
+        status, frame = cam.read()
 
-        framer = img2array(frame)
-        img = framer.to_array()
-        print(img)
+        #framer = img2array(frame)
+        #img = framer.to_array()
+        #print(img)
 
-        img2 = framer.to_label()
-        print(img2)
-
-        cv2.waitKey(0)
+        #img2 = framer.to_label()
+        #print(img2)
+        if status:
+            IMG = cv2.resize(frame, (480,480), interpolation=cv2.INTER_LANCZOS4)
+            cv2.imshow("img", IMG)
+            cv2.imshow('frame', frame[:, 80: 560])
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
