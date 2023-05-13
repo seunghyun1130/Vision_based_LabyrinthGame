@@ -16,7 +16,7 @@ class masking():
         lower_Black = np.array([0, 0, 0])
         upper_Black = np.array([100, 100, 100])
 
-    def toRed(self, frame, color_mode=1):
+    def toRed(self, frame):
         lower_Red_hsv1 = np.array([0, 100, 20])
         upper_Red_hsv1 = np.array([15, 255, 255])
         lower_Red_hsv2 = np.array([160, 100, 20])
@@ -34,7 +34,7 @@ class masking():
         processed_Red = cv2.bitwise_and(frame, frame, mask = mask_Red)
         return processed_Red, mask_Red
         
-    def toGreen(self, frame, color_mode=1):
+    def toGreen(self, frame):
         lower_Green_hsv = np.array([25, 52, 72])
         upper_Green_hsv = np.array([102, 255, 255])
 
@@ -46,7 +46,7 @@ class masking():
 
         return processed_Green
 
-    def toWhite(self, frame, color_mode=1, sensitivity = 15):
+    def toWhite(self, frame, sensitivity = 15):
         lower_White_hsv = np.array([0, 0, 255-sensitivity])
         upper_White_hsv = np.array([255, sensitivity, 255])
          
@@ -58,7 +58,7 @@ class masking():
 
         return processed_White
     
-    def toBlack(self, frame, color_mode=1):
+    def toBlack(self, frame):
         lower_Black_hsv = np.array([0, 0, 0])
         upper_Black_hsv = np.array([179, 100, 130])
         
