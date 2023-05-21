@@ -1,7 +1,6 @@
 #include <HardwareSerial.h> //for rs485 comm
 HardwareSerial rs485(2); // rxtx mode 2 of 0,1,2
 
-#include "config.h"
 #include "driver_const.h"
 #include <string.h>
 #include <math.h>
@@ -216,9 +215,9 @@ void readSensor(short buf[3][3]){
 }
 
 void calcSensor(){
-  calculateVal(accDiff, 1, 0);
-  calculateVal(angDiff, 1, 1);
-  calculateVal(angvelDiff, 1, 2);
+  calculateVal(accDiff, 1);
+  calculateVal(angDiff, 1);
+  calculateVal(angvelDiff, 1);
 }
 
 void clearBuffer(){
@@ -234,13 +233,13 @@ void clearBuffer(){
 
 void setupWT32() 
 { 
-  rs485.begin(9600, SERIAL_8N1, RXD2, TXD2);
+  rs485.begin(9600, SERIAL_8N1);
   rs485.flush();
 
 
   Serial.println("--------------- Serial Initiated ---------------");
-  calibrateAcc(1);
-  calibrateMag(1);
+  calibrateAcc();
+  calibrateMag();
   Serial.println("--------------- Calibration Done ---------------");
   rs485.flush();
   
@@ -255,7 +254,7 @@ void setupWT32()
 }
 
 
-void loop() 
+void gyro_loop() 
 { 
   rs485.flush();
   if(++flag==1){

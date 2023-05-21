@@ -1,3 +1,6 @@
+u16 CRC;
+u8 CRC_H, CRC_L;
+
 static const u16 crc16tab[256]= 
 {
  0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
@@ -36,8 +39,8 @@ static const u16 crc16tab[256]=
 
 u16 crc16_ccitt(const char *buf, int len)
 {
-    register int counter;
-    register u16 crc = 0;
+    int counter;
+    u16 crc = 0;
     for( counter = 0; counter < len; counter++)
     crc = (crc<<8) ^ crc16tab[((crc>>8) ^ *(char *)buf++)&0x00FF];
     return crc;
