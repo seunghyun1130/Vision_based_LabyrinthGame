@@ -11,14 +11,9 @@ Servo servo2;  // 서보 변수 선언
 int servo1_degree = 90;
 int servo2_degree = 90;
 
-int state = 1;
 int a;
 int b;
-uint8_t rcv = 0;
-uint8_t rcv_stat = 0;
-byte _rcvBuf[7]; // [0x02, 0x07, ang1, ang2, crch, crcl, 0x03]
-u16 CRC;
-u8 CRC_H, CRC_L;
+char _rcv_data[7] = {0,};
 
 void setup() {
 
@@ -49,6 +44,9 @@ void loop() {
   }
   client.loop();
 
+  // need receiving buffer
+  // with some pointer
+
   // motor control
   while(state==1)
   {
@@ -67,12 +65,12 @@ void loop() {
 
   while(state==0)
   { 
-    if(!checkCRC(_rcvBuf)){
+    if(!checkCRC(mqtt_sub)){
       Serial.println("invalid crc");
       break;
     }
-    a = int(_rcvBuf[1]);
-    b = int(_rcvBuf[2]);
+    a = int(mqtt_sub[1]);
+    b = int(mqtt_sub[2]);
     Serial.print(a); Serial.println(b);
     a=servo1_degree;
     b=servo2_degree;

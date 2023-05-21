@@ -35,5 +35,12 @@ const char* mqtt_server = "pc IP";
 #define ETH_TYPE        ETH_PHY_LAN8720
 static bool eth_connected = false;
 
-#define RXD2 5
-#define TXD2 17
+#define RXD2_PIN 5
+#define TXD2_PIN 17
+
+// GLOBAL BUFFERS
+// for ino & network_fn
+int state = 1;
+// for network_fn
+char mqtt_sub[50];
+char mqtt_pub[50];

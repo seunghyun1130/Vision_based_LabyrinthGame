@@ -1,5 +1,4 @@
 #include <Arduino.h> 
-#include "config.h"
 
 unsigned long long int uS_TO_S_FACTOR = 1000000ULL;
 unsigned long long int TIME_TO_SLEEP = 0;

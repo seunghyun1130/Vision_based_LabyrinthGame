@@ -1,8 +1,7 @@
 #include <Wire.h>
-#include "config.h"
 
 int rcv = 0;
-const int Address = 0x50;
+int rcv_stat = 0;
 byte _rcvBuf[7];
 
 void receiveEvent(int bytes) {
@@ -30,9 +29,8 @@ void sendData(){
     Wire.write(rcv); // 쓰는건 아닌데 살려는 두자
 }
 
-void setup()
+void i2c_setup()
 {
-  Serial.begin(115200);
   Wire.begin(Address);
   Wire.onReceive(receiveEvent);
 //  Wire.onRequest(sendData);
