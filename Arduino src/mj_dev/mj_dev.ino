@@ -11,7 +11,6 @@ Servo servo2;  // 서보 변수 선언
 int servo1_degree = 90;
 int servo2_degree = 90;
 
-int state = 1;
 int a;
 int b;
 char _rcv_data[7] = {0,};
@@ -66,12 +65,12 @@ void loop() {
 
   while(state==0)
   { 
-    if(!checkCRC(_rcv_data)){
+    if(!checkCRC(mqtt_sub)){
       Serial.println("invalid crc");
       break;
     }
-    a = int(_rcvBuf[1]);
-    b = int(_rcvBuf[2]);
+    a = int(mqtt_sub[1]);
+    b = int(mqtt_sub[2]);
     Serial.print(a); Serial.println(b);
     a=servo1_degree;
     b=servo2_degree;

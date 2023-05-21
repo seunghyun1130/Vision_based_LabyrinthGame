@@ -10,7 +10,7 @@
 WiFiClient espClient;
 PubSubClient client(espClient);
 long lastMsgTime = 0;
-char msg[50];
+
 
 // void WiFiEvent(WiFiEvent_t event)
 // {
@@ -83,9 +83,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == 'A') {
-    digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
-    // but actually the LED is on; this is because
-    // it is acive low on the ESP-01)
+    digitalWrite(BUILTIN_LED, LOW);
+    for(int i; i<length; i++){
+      mqtt_sub[i] = (char)payload[i];
+    }
   } else {
     digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
   }
@@ -126,8 +127,8 @@ void mqtt_publish(){
     char packet[50];
     //mqtt publishing이 char형으로만 보낼 수 있기때문에 toCharArray로 변환한다.
     Serial.print("Publish message: ");
-    Serial.println(msg);
-    client.publish("my topic name", msg);
+    Serial.println(mqtt_pub);
+    client.publish("maze/arduino/reply", mqtt_pub);
   }
   delay(5000); //5초 단위로 Publishing (조정가능)
 }
@@ -136,7 +137,7 @@ void setupMQTTCLient(){
     // WiFi.onEvent(WiFiEvent);
     setupWiFi();
     client.setServer(mqtt_server, 1883);
-    client.subscribe("maze/motor/command");
+    client.subscribe("maze/server/command");
     client.setCallback(callback);
 }
 
