@@ -8,13 +8,35 @@ void setupLED(){
 }
 
 void turnON(){
-    for(int i=0; i<NUMPIXELS; i++){
+   pixels.setPixelColor(0,0,255,0);
+   pixels.show();
+   pixels.setPixelColor(1,255,0,0);
+   pixels.show();
+    for(int i=2; i<NUMPIXELS; i++){
         // G R B order
         pixels.setPixelColor(i,180,180,180);
         pixels.show();
   }
 }
 
-void red(){
-    
+
+if (WiFi.status() == WL_CONNECTED){
+   pixels.setPixelColor(0,0,0,255);
+   pixels.show();
+}
+
+else{
+  pixels.setPixelColor(0,0,255,0);
+  pixels.show();
+}
+
+
+if ((char)payload[0] == 'A'){
+   pixels.setPixelColor(0,0,0,255);
+   pixels.show();
+}
+
+else{
+  pixels.setPixelColor(0,0,255,0);
+  pixels.show();
 }
