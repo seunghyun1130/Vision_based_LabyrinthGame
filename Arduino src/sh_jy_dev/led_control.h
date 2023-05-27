@@ -7,7 +7,7 @@ void setupLED(){
     pixels.begin();
 }
 
-void turnON(void){
+void turnON(){
     for(int i=0; i<NUMPIXELS; i++){
         // G R B order
         pixels.setPixelColor(i,180,180,180);
@@ -15,3 +15,6 @@ void turnON(void){
   }
 }
 
+void red(){
+    
+}
