@@ -1,4 +1,5 @@
-#include "config.h"
+u16 CRC;
+u8 CRC_H, CRC_L;
 
 static const u16 crc16tab[256]= 
 {
@@ -36,11 +37,24 @@ static const u16 crc16tab[256]=
  0x6e17,0x7e36,0x4e55,0x5e74,0x2e93,0x3eb2,0x0ed1,0x1ef0
 };
 
-u16 crc16_ccitt(const void *buf, int len)
+u16 crc16_ccitt(const char *buf, int len)
 {
-    register int counter;
-    register u16 crc = 0;
+    int counter;
+    u16 crc = 0;
     for( counter = 0; counter < len; counter++)
-    crc = (crc<<8) ^ crc16tab[((crc>>8) ^ *(char*)buf++)&0x00FF];
+    crc = (crc<<8) ^ crc16tab[((crc>>8) ^ *(char *)buf++)&0x00FF];
     return crc;
+}
+
+bool checkCRC(char* buf){
+  // get _rcvBuf as input
+  char CRCSET[4] = {int(buf[0]), int(buf[1]), int(buf[2]), int(buf[3])};
+  CRC = crc16_ccitt(CRCSET, sizeof(CRCSET));
+  CRC_H = (CRC>>8);CRC_L = (CRC & 0xFF);
+
+  if((CRC_H == buf[4])&&(CRC_L == buf[5])){
+    return true;
+  }else{
+    return false;
+  }
 }

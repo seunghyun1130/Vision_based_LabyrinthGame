@@ -38,6 +38,9 @@ static bool eth_connected = false;
 #define RXD2_PIN 5
 #define TXD2_PIN 17
 
+#define NUMPIXELS 60
+#define PIXELPIN 13
+
 // GLOBAL BUFFERS
 // for ino & network_fn
 int state = 1;
