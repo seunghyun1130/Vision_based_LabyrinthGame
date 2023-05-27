@@ -4,6 +4,7 @@
 #include "i2c_cb.h"
 #include "network_fn.h"
 #include "wt32driver.h"
+#include "led_control.h"
 
 Servo servo1;  // 서보 변수 선언
 Servo servo2;  // 서보 변수 선언
@@ -24,6 +25,7 @@ void setup() {
 
   // Wire.begin(Address); // change this part to socket
   // Wire.onReceive(receiveEvent);
+  setupLED();
   setupMQTTCLient();
   // setupWT32(); // imu sensor init
 
